@@ -21,6 +21,9 @@ RUN rm /steam/steamcmd_linux.tar.gz
 # Change owner rights
 RUN chown -R steam:steam /steam/
 
+# Update steam once
+RUN /steam/steamcmd.sh +quit
+
 WORKDIR /steam/
 
 CMD /steam/steamcmd.sh
