@@ -36,5 +36,8 @@ VOLUME $GAMES_HOME
 # Use Steam home as workdir
 WORKDIR $STEAM_HOME
 
+# Set user for running steam
+USER $STEAM_USER
+
 # Start SteamCMD when running a container without parameters
-CMD $STEAM_HOME/steamcmd.sh
+CMD $STEAM_HOME/steamcmd.sh +force_install_dir $GAMES_HOME +login anonymous
