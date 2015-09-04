@@ -2,7 +2,7 @@ FROM centos:7
 MAINTAINER Tobias Germer
 
 # Install the dependencies required to run SteamCMD
-RUN yum install glibc.i686 libstdc++.i686 -y && \
+RUN yum install glibc.i686 libstdc++.i686 wget.x86_64 -y && \
     yum update -y
 
 # Add user to run steam and create directory for files
