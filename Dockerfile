@@ -1,29 +1,40 @@
 FROM centos:7
 MAINTAINER Tobias Germer
 
+# Environment variables
+ENV STEAM_USER=steam \
+    STEAM_HOME=/steam \
+    GAMES_HOME=/games
+
 # Install the dependencies required to run SteamCMD
 RUN yum install glibc.i686 libstdc++.i686 wget.x86_64 -y && \
     yum update -y
 
-# Add user to run steam and create directory for files
-RUN useradd -m steam && \
-    mkdir /steam
+# Add user to run steam and create directories for files
+RUN useradd -m $STEAM_USER && \
+    mkdir $STEAM_HOME && \
+    mkdir $GAMES_HOME
 
 # Download SteamCMD tarball
-RUN wget -P /steam/ https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+RUN wget -P $STEAM_HOME https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
 
 # Extract the contents to the directory
-RUN tar -xvzf /steam/steamcmd_linux.tar.gz -C /steam/
+RUN tar -xvzf $STEAM_HOME/steamcmd_linux.tar.gz -C $STEAM_HOME/
 
 # Remove tarball
-RUN rm /steam/steamcmd_linux.tar.gz
+RUN rm $STEAM_HOME/steamcmd_linux.tar.gz
 
 # Change owner rights
-RUN chown -R steam:steam /steam/
+RUN chown -R $STEAM_USER:$STEAM_USER $STEAM_HOME $GAMES_HOME
 
-# Update steam once
-RUN /steam/steamcmd.sh +quit
+# Update Steam once
+RUN $STEAM_HOME/steamcmd.sh +quit
 
-WORKDIR /steam/
+# Bypass union filesystem for games
+VOLUME $GAMES_HOME
 
-CMD /steam/steamcmd.sh
+# Use Steam home as workdir
+WORKDIR $STEAM_HOME
+
+# Start SteamCMD when running a container without parameters
+CMD $STEAM_HOME/steamcmd.sh
