@@ -9,15 +9,18 @@ RUN yum install glibc.i686 libstdc++.i686 wget.x86_64 -y && \
 RUN useradd -m steam && \
     mkdir /steam
 
-# Download SteamCMD
+# Download SteamCMD tarball
 RUN wget -P /steam/ https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
 
 # Extract the contents to the directory
 RUN tar -xvzf /steam/steamcmd_linux.tar.gz -C /steam/
 
+# Remove tarball
+RUN rm /steam/steamcmd_linux.tar.gz
+
 # Change owner rights
 RUN chown -R steam:steam /steam/
 
-WORKDIR /steam/steamcmd/
+WORKDIR /steam/
 
-CMD /steam/steamcmd/steamcmd.sh
+CMD /steam/steamcmd.sh
